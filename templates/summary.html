@@ -1,0 +1,31 @@
+<div class="content">
+    <h2>Summary</h2>
+    <div>
+        <table>
+            <tr>
+                <th>Grid Today</th>
+                <td>{{ source_time['grid']['dat'] +' hours' }}</td>
+            </tr>
+            <tr>
+                <th>PV Today</th>
+                <td>{{ source_time['pv']['dat'] +' hours' }}</td>
+            </tr>
+            <tr>
+                <th>Energy Today</th>
+                <td>{{ summary[0]['val']|float|round(2)|string +' kWh' }}</td>
+            </tr>
+            <tr>
+                <th>Energy Month</th>
+                <td>{{ summary[1]['val']|float|round(2)|string  +' kWh' }}</td>
+            </tr>
+            <tr>
+                <th>Energy Year</th>
+                <td>{{ summary[2]['val']|float|round(2)|string +' kWh' }}</td>
+            </tr>
+            <tr>
+                <th>Energy Total</th>
+                <td>{{ summary[3]['val']|float|round(2)|string  +' kWh' }}</td>
+            </tr>
+        </table>
+    </div>
+</div>

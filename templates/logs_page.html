@@ -1,0 +1,108 @@
+{% include "navbar.html" %}
+
+<body>
+{% if 'Error code' in data %}
+    <p>An error occurred!</p>
+{% else %}
+
+    <div class="content">
+        <h2>Logs</h2>
+        <div class="overflow">
+            <table>
+                <tr>
+                    <th>Date</th>
+                    {% for i in range(data['Timestamp']|length) %}
+                        <td>{{ data['Timestamp'][i].split(' ')[0] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Time</th>
+                    {% for i in range(data['Timestamp']|length) %}
+                        <td>{{ data['Timestamp'][i].split(' ')[1] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Grid Voltage</th>
+                    {% for i in range(data['Grid Voltage']|length) %}
+                        <td>{{ data['Grid Voltage'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>PV Power</th>
+                    {% for i in range(data['PV1 Charging Power']|length) %}
+                        <td>{{ data['PV1 Charging Power'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>PV Voltage</th>
+                    {% for i in range(data['PV1 Input Voltage']|length) %}
+                        <td>{{ data['PV1 Input Voltage'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>PV Current</th>
+                    {% for i in range(data['PV1 Input Current']|length) %}
+                        <td>{{ data['PV1 Input Current'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Battery capacity</th>
+                    {% for i in range(data['Battery Capacity']|length) %}
+                        <td>{{ data['Battery Capacity'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Battery Voltage</th>
+                    {% for i in range(data['Battery Voltage']|length) %}
+                        <td>{{ data['Battery Voltage'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Battery Charge</th>
+                    {% for i in range(data['Battery Charging Current']|length) %}
+                        <td>{{ data['Battery Charging Current'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Battery Discharge</th>
+                    {% for i in range(data['Battery Discharge Current']|length) %}
+                        <td>{{ data['Battery Discharge Current'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Output Power</th>
+                    {% for i in range(data['AC Output Active Power']|length) %}
+                        <td>{{ data['AC Output Active Power'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Output Voltage</th>
+                    {% for i in range(data['AC Output Voltage']|length) %}
+                        <td>{{ data['AC Output Voltage'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Output Current</th>
+                    {% for i in range(data['AC Output Voltage']|length) %}
+                        <td>{{ (data['AC Output Active Power'][i]|float /data['AC Output Voltage'][i]|float)|round(2) }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Today generation</th>
+                    {% for i in range(data['Today generation']|length) %}
+                        <td>{{ data['Today generation'][i] }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Total generation</th>
+                    {% for i in range(data['Total generation']|length) %}
+                        <td>{{ data['Total generation'][i] }}</td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endif %}
+</body>
+{% include 'footer.html' %}
+</html>

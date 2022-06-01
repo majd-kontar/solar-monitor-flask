@@ -1,0 +1,66 @@
+<div class="content">
+    <h2>Latest Log</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <td>{{ data['Timestamp'].split(' ')[0] }}</td>
+        </tr>
+        <tr>
+            <th>Time</th>
+            <td>{{ data['Timestamp'].split(' ')[1] }}</td>
+
+        </tr>
+        <tr>
+            <th>Grid Voltage</th>
+            <td>{{ data['Grid Voltage'] }}</td>
+        </tr>
+        <tr>
+            <th>PV Power</th>
+            <td>{{ data['PV1 Charging Power'] }}</td>
+        </tr>
+        <tr>
+            <th class="hide">PV Voltage</th>
+            <td class="hide">{{ data['PV1 Input Voltage'] }}</td>
+        </tr>
+        <tr>
+            <th>PV Current</th>
+            <td>{{ data['PV1 Input Current'] }}</td>
+        </tr>
+        <tr>
+            <th>Battery Capacity</th>
+            <td>{{ data['Battery Capacity'] }}</td>
+        </tr>
+        <tr>
+            <th>Battery Voltage</th>
+            <td>{{ data['Battery Voltage'] }}</td>
+        </tr>
+        <tr>
+            <th>Battery Charging Current</th>
+            <td>{{ data['Battery Charging Current'] }}</td>
+        </tr>
+        <tr>
+            <th>Battery Discharge Current</th>
+            <td>{{ data['Battery Discharge Current'] }}</td>
+        </tr>
+        <tr>
+            <th>Output Power</th>
+            <td>{{ data['AC Output Active Power'] }}</td>
+        </tr>
+        <tr>
+            <th class="hide">Output Voltage</th>
+            <td class="hide">{{ data['AC Output Voltage'] }}</td>
+        </tr>
+        <tr>
+            <th class="hidden">Output Current</th>
+            <td class="hidden">{{ (data['AC Output Active Power']|float /data['AC Output Voltage']|float)|round(2) }}</td>
+        </tr>
+        <tr>
+            <th class="hidden">Today generation</th>
+            <td class="hidden">{{ data['Today generation'] }}</td>
+        </tr>
+        <tr>
+            <th class="hide">Total generation</th>
+            <td class="hide">{{ data['Total generation'] }}</td>
+        </tr>
+    </table>
+</div>

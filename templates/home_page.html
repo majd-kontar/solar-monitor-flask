@@ -1,0 +1,12 @@
+{% include "navbar.html" %}
+<body>
+{% if 'Error code' in data or 'Error code' in grid %}
+    <p>An error occurred!</p>
+{% else %}
+    {% include "status.html" %}
+    {% include "summary.html" %}
+    {% include "latest_log.html" %}
+{% endif %}
+</body>
+{% include 'footer.html' %}
+</html>

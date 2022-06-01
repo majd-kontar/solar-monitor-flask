@@ -1,0 +1,11 @@
+{% include "navbar.html" %}
+
+<body>
+{% if 'Error code' in data %}
+    <p>An error occurred!</p>
+{% else %}
+    {% include 'summary.html' %}
+{% endif %}
+</body>
+{% include 'footer.html' %}
+</html>

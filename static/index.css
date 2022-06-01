@@ -1,0 +1,260 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    font: 24px "Lucinda Grande", "Lucinda Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+    padding: 20px;
+}
+
+a h1 {
+    font-size: 50px;
+    color: gold;
+    text-align: center;
+}
+
+h1 {
+    font-size: 40px;
+    text-align: center;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: deepskyblue;
+}
+
+body > nav > div.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+a:hover h1 {
+    color: orange;
+}
+
+
+h2 {
+    font-size: 32px;
+    margin: 1%;
+    padding: 10px;
+    text-align: center;
+}
+
+div.overflow {
+    overflow-x: auto;
+    width: 90vw;
+}
+
+div.content {
+    background-color: darkseagreen;
+    display: block;
+    margin: 10px auto;
+    width: fit-content;
+    padding: 0 20px 20px 20px;
+    border-radius: 20px;
+    border-style: groove;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    font-size: 40px;
+    margin: auto;
+}
+
+th {
+    position: sticky;
+    left: 0;
+    background-color: darkseagreen;
+}
+
+table, tr, th, td {
+    border: 2px black solid;
+}
+
+th, td {
+    padding: 0 15px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+nav button {
+    margin: 20px;
+}
+
+button {
+    border: black ridge medium;
+    border-radius: 10px;
+    font-size: 30px;
+    display: block;
+    padding: 20px;
+    margin: 20px auto;
+    background-color: deepskyblue;
+}
+
+button:hover {
+    background-color: skyblue;
+}
+button.menu:hover {
+    background-color: orange;
+}
+img {
+    width: 180px;
+    padding: 20px;
+}
+
+div.icons {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: baseline;
+}
+
+div.icon {
+    text-align: center;
+}
+
+p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+p.error {
+    color: darkred;
+}
+
+input {
+    margin: 20px 30px;
+    padding: 10px;
+    font-size: 24px;
+    width: 400px;
+    height: 40px;
+}
+
+button.menu {
+    display: none;
+}
+
+footer p {
+    text-align: center;
+    margin: 50px 20px 20px 20px;
+}
+
+@media only screen and (max-width: 1500px) {
+    input {
+        display: block;
+    }
+
+    div.content h2 {
+        font-size: 35px;
+    }
+
+    nav button {
+        font-size: 30px;
+        padding: 20px;
+    }
+
+    table {
+        font-size: 35px;
+    }
+
+    img {
+        width: 100px;
+    }
+}
+
+@media only screen and (max-width: 1160px) {
+    a h1 {
+        font-size: 40px;
+        white-space: break-spaces;
+    }
+
+    nav {
+        display: block;
+    }
+
+    nav button {
+        font-size: 25px;
+        padding: 15px;
+    }
+
+    table {
+        font-size: 20px;
+    }
+
+    img {
+        width: 90px;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    a {
+        padding: 2px;
+        font-size: xx-small;
+    }
+
+    a h1 {
+        font-size: 20px;
+        white-space: break-spaces;
+    }
+
+    button.menu {
+        display: block;
+        margin: auto;
+        background-color: gold;
+    }
+
+    div.content h2 {
+        font-size: 20px;
+        padding: 2px;
+    }
+
+    p {
+        font-size: 10px;
+    }
+
+    nav button {
+        margin: 5px;
+        font-size: 15px;
+        padding: 5px;
+        border-width: 2px;
+    }
+
+    body nav div.buttons {
+        flex-direction: column;
+        display: none;
+    }
+
+    div.content {
+        padding: 0 10px 10px 10px;
+    }
+
+    nav {
+        display: block;
+        padding-bottom: 5px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    img {
+        width: 45px;
+    }
+
+    footer p {
+        font-size: 10px;
+    }
+}
+

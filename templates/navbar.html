@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../static/index.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet" href="../static/index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Solar Monitor</title>
+</head>
+<nav>
+    <a href='/'>
+        <h1>Solar Monitor</h1>
+    </a>
+    <div>
+        <button class='menu' type="button" onclick=show_hide_btns()>
+            Menu
+        </button>
+    </div>
+    <div class="buttons">
+        <button type="button"
+                onclick=window.location.href=navigate('home')>
+            Home
+        </button>
+        <button type="button"
+                onclick=window.location.href=navigate('status')>
+            Status
+        </button>
+        <button type="button"
+                onclick=window.location.href=navigate('logs')>
+            Logs
+        </button>
+        <button type="button"
+                onclick=window.location.href=navigate('summary')>
+            Summary
+        </button>
+        <button type="button"
+                onclick=window.location.href=navigate('logout')>
+            Logout
+        </button>
+    </div>
+</nav>

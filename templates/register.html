@@ -1,0 +1,24 @@
+{% include "navbar_main.html" %}
+<body>
+<div class="content">
+    <h1>Please Register</h1>
+    <br>
+    <form action="" method="post">
+        <input type="text" required placeholder="Username" name="username" value="{{ request.form.username }}">
+        <input type="password" required placeholder="Password" name="password" value="{{ request.form.password }}">
+        <input type="text" required placeholder="Plant ID" name="plantid" value="{{ request.form.plantid }}">
+        <input type="text" required placeholder="pn" name="pn" value="{{ request.form.pn }}">
+        <input type="text" required placeholder="sn" name="sn" value="{{ request.form.sn }}">
+        <input type="text" required placeholder="Devcode" name="devcode" value="{{ request.form.devcode }}">
+        {% if error %}
+            <p class="error"><strong>Error:</strong> {{ error }}
+            <br>
+        {% endif %}
+        <button class="submit" type="submit">Register</button>
+    </form>
+    <a class="switch" id="login" onclick=window.location.href='/login'>
+        <label for="login">Already have an account?</label>
+    </a>
+</div>
+</body>
+{% include "footer.html" %}

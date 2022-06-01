@@ -1,0 +1,20 @@
+{% include "navbar_main.html" %}
+<body>
+<div class="content">
+    <h1>Please login</h1>
+    <br>
+    <form action="" method="post">
+        <input type="text" required placeholder="Username" name="username" value="{{ request.form.username }}">
+        <input type="password" required placeholder="Password" name="password" value="{{ request.form.password }}">
+        {% if error %}
+            <p class="error"><strong>Error:</strong> {{ error }}
+            <br>
+        {% endif %}
+        <button class="submit" type="submit">Login</button>
+    </form>
+    <a class="switch" id="register" onclick=window.location.href='/register'>
+        <label for="register">Don't have an account?</label>
+    </a>
+</div>
+</body>
+{% include "footer.html" %}

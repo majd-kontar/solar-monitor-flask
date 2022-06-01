@@ -1,0 +1,51 @@
+<div class="content">
+    <h2>Status</h2>
+    <div class="icons">
+        <div class="icon">
+            <img src="../static/battery.png" alt="Battery">
+            <p>
+                {{ status['battery']['status'] }}
+            </p>
+            <p>
+                {{ status['battery']['voltage']+' V' }}
+            </p>
+            <p>
+                {{ status['battery']['capacity']+' %' }}
+            </p>
+        </div>
+        {% if status['pv']['status'] %}
+            <div class="icon">
+                <img src="../static/pv.png" alt="PV">
+                <p>
+                    {{ status['pv']['power']+' W' }}
+                </p>
+                <p>
+                    {{ status['pv']['voltage']+' V' }}
+                </p>
+                <p>
+                    {{ status['pv']['current']+' A' }}
+                </p>
+            </div>
+        {% endif %}
+        {% if status['grid']['status'] %}
+            <div class="icon">
+                <img src="../static/grid.png" alt="Battery">
+                <p>
+                    {{ status['grid']['voltage']+' V' }}
+                </p>
+            </div>
+        {% endif %}
+        <div class="icon">
+            <img src="../static/home.png" alt="Output">
+            <p>
+                {{ status['output']['power']+' W' }}
+            </p>
+            <p>
+                {{ status['output']['voltage']+' V' }}
+            </p>
+            <p>
+                {{ status['output']['current']+' A' }}
+            </p>
+        </div>
+    </div>
+</div>

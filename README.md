@@ -3,7 +3,7 @@
 <img src="https://user-images.githubusercontent.com/97162452/171486523-76b23952-5c76-4a1d-8f55-7049343990d4.png " width=30%>
 </p>
 ## Description
-Website to monitor ShineMonitor solar inverter data
+Website to monitor a solar inverter
 
 ## Features
 ### Status 
@@ -20,4 +20,4 @@ Website to monitor ShineMonitor solar inverter data
 - Grid time in day
 ### Logs
 ![image](https://user-images.githubusercontent.com/97162452/171488636-3a60a239-f26b-47d5-9216-80f7b2647364.png)
-Shows past 100 logs 
+- Shows past 100 logs 

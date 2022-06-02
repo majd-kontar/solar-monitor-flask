@@ -1,11 +1,14 @@
 import hashlib
 import string
 import random
-from flask import Flask, request, render_template, redirect, url_for, make_response, session, jsonify
+from datetime import datetime, timedelta
+import pytz
+from flask import Flask, request, render_template, redirect, url_for, make_response, session
 import database
 from shine_monitor_api import ShineMonitor
 
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
 app.secret_key = 'aj;lfja;lfaj=wir['
 shine_monitor = ShineMonitor()
 
@@ -18,12 +21,18 @@ def get_random_string(length):
             return to_return
 
 
-@app.route('/home-<id>', methods=['GET'])
-def home(id):
+def get_expire_date():
+    expire_date = datetime.now(tz=pytz.timezone('Asia/Beirut')).replace(tzinfo=None)
+    expire_date = expire_date + timedelta(days=90)
+    return expire_date
+
+
+@app.route('/home', methods=['GET'])
+def home():
+    id = request.cookies.get('session_id')
     if id in session:
         # print(session)
-        usr = session[id]
-        user = database.get_user(usr)
+        user = session[id]
         data = shine_monitor.get_energy_now(user)
         summary = shine_monitor.get_energy_summary(user)
         source_time = shine_monitor.get_source_summary(user)
@@ -36,24 +45,24 @@ def home(id):
         return response
 
 
-@app.route('/logs-<id>', methods=['GET'])
-def get_logs(id):
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    id = request.cookies.get('session_id')
     if id in session:
         # print(session)
-        usr = session[id]
-        user = database.get_user(usr)
+        user = session[id]
         data = shine_monitor.get_data(user)
         return render_template('logs_page.html', data=data)
     else:
         return redirect(url_for('login'))
 
 
-@app.route('/summary-<id>', methods=['GET'])
-def get_summary(id):
+@app.route('/summary', methods=['GET'])
+def get_summary():
+    id = request.cookies.get('session_id')
     if id in session:
         # print(session)
-        usr = session[id]
-        user = database.get_user(usr)
+        user = session[id]
         summary = shine_monitor.get_energy_summary(user)
         source_time = shine_monitor.get_source_summary(user)
         return render_template('summary_page.html', summary=summary, source_time=source_time)
@@ -61,12 +70,12 @@ def get_summary(id):
         return redirect(url_for('login'))
 
 
-@app.route('/status-<id>')
-def get_status(id):
+@app.route('/status')
+def get_status():
+    id = request.cookies.get('session_id')
     if id in session:
         # print(session)
-        usr = session[id]
-        user = database.get_user(usr)
+        user = session[id]
         data = shine_monitor.get_energy_now(user)
         status = shine_monitor.get_status(data)
         # print(data)
@@ -86,22 +95,23 @@ def login():
         user_db = database.get_user(usr)
         if user_db and pwd == user_db[1]:
             key = get_random_string(20)
-            session[key] = usr
+            session[key] = user_db
             response = make_response(redirect('/home-' + key))
-            response.set_cookie('session_id', key)
+            response.set_cookie('session_id', key, expires=get_expire_date())
             return response
         elif not user_db:
             err = 'User doesn\'t exist.'
         else:
             err = 'Invalid Credentials. Please try again.'
-    elif request.cookies.get('session_id'):
-        return redirect('/home-' + request.cookies.get('session_id'))
+    elif request.cookies.get('session_id') in session:
+        return redirect('/home')
     return render_template('login.html', error=err)
 
 
-@app.route('/logout-<id>', methods=['GET'])
-def logout(id):
+@app.route('/logout', methods=['GET'])
+def logout():
     response = make_response(redirect(url_for('login')))
+    id = request.cookies.get('session_id')
     if id in session:
         session.pop(id)
     if request.cookies.get('session_id'):
@@ -121,9 +131,9 @@ def register():
         if valid and not user_db:
             database.add_user(request.form, pwd, token, secret, expire)
             key = get_random_string(20)
-            session[key] = usr
-            response = make_response(redirect('/home-' + key))
-            response.set_cookie('session_id', key)
+            session[key] = user_db
+            response = make_response(redirect('/home'))
+            response.set_cookie('session_id', key, expires=get_expire_date())
             return response
         elif user_db:
             err = 'User already exists.'
@@ -136,7 +146,7 @@ def register():
 @app.route('/<path:path>')
 def catch_all(path):
     if request.cookies.get('session_id'):
-        return redirect('/home-' + request.cookies.get('session_id'))
+        return redirect('/home')
     return redirect(url_for('login'))
 
 

@@ -3,7 +3,8 @@ setInterval(() => {
 }, 3 * 60 * 1000)
 
 const navigate = (x) => {
-    return window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + x + window.location.href.substring(window.location.href.lastIndexOf('-'))
+    return '/'+x
+    // return window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + x + window.location.href.substring(window.location.href.lastIndexOf('-'))
 }
 const show_hide_btns = () => {
     var buttons = document.querySelector('.buttons')

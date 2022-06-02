@@ -88,8 +88,9 @@ class ShineMonitor:
         if errcode == 0:
             fields = r.json()['dat']['row'][0]['field']
             to_return = dict()
-            for (i, field) in enumerate(fields):
-                to_return[r.json()['dat']['title'][i]['title']] = field
+            to_return['dat'] = fields
+            # for (i, field) in enumerate(fields):
+            #     to_return[r.json()['dat']['title'][i]['title']] = field
             return to_return
         else:
             return {'Error code': str(errcode)}
@@ -128,11 +129,8 @@ class ShineMonitor:
     def get_source_time(self, user, field, threshold=0):
         response = self.get_graph_data(user, field)
         if response['err'] == 0:
-            count = 0
             logs = response['dat']
-            for log in logs:
-                if float(log['val']) > threshold:
-                    count += 1
+            count = sum(map(lambda log: float(log['val']) > 0, logs))
             to_return = count * 5 / 60
             to_return = str(int(to_return)) + ':' + str(int(to_return % 1 * 60))
             return {'dat': to_return}
@@ -151,25 +149,25 @@ class ShineMonitor:
     def get_status(self, log):
         to_return = dict()
         if 'Error code' not in log:
-            battery_status = 'Charging' if (float(log['Battery Charging Current']) > 0) else 'Discharging'
+            battery_status = 'Charging' if (float(log['dat'][7]) > 0) else 'Discharging'
             to_return['battery'] = {
-                'voltage': log['Battery Voltage'],
+                'voltage': log['dat'][5],
                 'status': battery_status,
-                'capacity': log['Battery Capacity']
+                'capacity': log['dat'][6]
             }
             to_return['grid'] = {
-                'status': float(log['Grid Voltage']) > 0,
-                'voltage': log['Grid Voltage']
+                'status': float(log['dat'][2]) > 0,
+                'voltage': log['dat'][2]
             }
             to_return['pv'] = {
-                'status': float(log['PV1 Input Voltage']) > 200,
-                'power': log['PV1 Charging Power'],
-                'voltage': log['PV1 Input Voltage'],
-                'current': log['PV1 Input Current']
+                'status': float(log['dat'][3]) > 200,
+                'power': log['dat'][4],
+                'voltage': log['dat'][3],
+                'current': log['dat'][12]
             }
             to_return['output'] = {
-                'current': str(round(float(log['AC Output Active Power']) / float(log['AC Output Voltage']), 2)),
-                'power': log['AC Output Active Power'],
-                'voltage': log['AC Output Voltage']
+                'current': str(round(float(log['dat'][10]) / float(log['dat'][9]), 2)),
+                'power': log['dat'][10],
+                'voltage': log['dat'][9]
             }
         return to_return

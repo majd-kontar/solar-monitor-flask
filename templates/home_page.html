@@ -1,6 +1,6 @@
 {% include "navbar.html" %}
 <body>
-{% if 'Error code' in data or 'Error code' in grid %}
+{% if 'Error code' in summary  or 'Error code' in data or 'Error code' in source_time %}
     <p>An error occurred!</p>
 {% else %}
     {% include "status.html" %}

@@ -12,6 +12,8 @@ class ShineMonitor:
         self._debug = 1
         self.timezone = 'Asia/Beirut'
         self.base_url = 'http://web.shinemonitor.com/public/'
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (X11; CrOS x86_64 12871.102.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.141 Safari/537.36"}
 
     def salt(self):
         return str(round(time.time() * 1000))
@@ -89,8 +91,6 @@ class ShineMonitor:
             fields = r.json()['dat']['row'][0]['field']
             to_return = dict()
             to_return['dat'] = fields
-            # for (i, field) in enumerate(fields):
-            #     to_return[r.json()['dat']['title'][i]['title']] = field
             return to_return
         else:
             return {'Error code': str(errcode)}
@@ -130,7 +130,7 @@ class ShineMonitor:
         response = self.get_graph_data(user, field)
         if response['err'] == 0:
             logs = response['dat']
-            count = sum(map(lambda log: float(log['val']) > 0, logs))
+            count = sum(map(lambda log: float(log['val']) > threshold, logs))
             to_return = count * 5 / 60
             to_return = str(int(to_return)) + ':' + str(int(to_return % 1 * 60))
             return {'dat': to_return}

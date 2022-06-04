@@ -38,7 +38,7 @@ class ShineMonitor:
             database.update_token(user[0], token, secret, expire)
 
     def build_request_url(self, action, salt=None, secret=None, token=None, device_code=None, plant_id=None, pn=None, sn=None, usr=None, pwd=None,
-                          field=None):
+                          field=None, page=0):
         date = datetime.now(tz=pytz.timezone(self.timezone)).replace(tzinfo=None)
         if action == 'queryPlantCurrentData':
             action = '&action=queryPlantCurrentData&plantid=' + plant_id + '&par=ENERGY_TODAY,ENERGY_MONTH,ENERGY_YEAR,ENERGY_TOTAL,ENERGY_PROCEEDS,ENERGY_CO2,CURRENT_TEMP,CURRENT_RADIANT,BATTERY_SOC,ENERGY_COAL,ENERGY_SO2'
@@ -47,7 +47,7 @@ class ShineMonitor:
                 '%Y-%m-%d') + '&i18n=en_US&lang=en_US'
         elif action == 'queryDeviceDataOneDayPaging':
             action = '&action=queryDeviceDataOneDayPaging&devaddr=1&pn=' + pn + '&devcode=' + device_code + '&sn=' + sn + '&date=' + date.strftime(
-                '%Y-%m-%d') + '&page=0&pagesize=500&i18n=en_US&lang=en_US'
+                '%Y-%m-%d') + '&page=' + str(page) + '&pagesize=500&i18n=en_US&lang=en_US'
         elif action == 'queryPlantDeviceDesignatedInformation':
             action = '&action=queryPlantDeviceDesignatedInformation&plantid=' + plant_id + '&devtype=512&i18n=en_US&parameter=energy_today,energy_total&i18n=en_US&lang=en_US '
         elif action == 'queryDeviceChartFieldDetailData':
@@ -96,25 +96,34 @@ class ShineMonitor:
             return {'Error code': str(errcode)}
 
     def get_data(self, user):
+        to_return = dict()
         self.check_token(user)
-        req_url = self.build_request_url('queryDeviceDataOneDayPaging', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4])
-        r = requests.get(req_url)
-        errcode = r.json()['err']
-        if errcode == 0:
-            to_return = dict()
-            for title in r.json()['dat']['title']:
-                to_return[title['title']] = []
-            for fields in r.json()['dat']['row']:
-                for (i, field) in enumerate(fields['field']):
-                    to_return[r.json()['dat']['title'][i]['title']].append(field)
-            return to_return
-        else:
-            return {'Error code': str(errcode)}
+        stime = time.time()
+        for page in range(6):
+            print(page)
+            req_url = self.build_request_url('queryDeviceDataOneDayPaging', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4],
+                                             page=page)
+            r = requests.get(req_url)
+            errcode = r.json()['err']
+            if errcode == 0:
+                if page == 0:
+                    for title in r.json()['dat']['title']:
+                        to_return[title['title']] = []
+                for fields in r.json()['dat']['row']:
+                    for (i, field) in enumerate(fields['field']):
+                        to_return[r.json()['dat']['title'][i]['title']].append(field)
+            elif errcode == 12:
+                print(time.time() - stime)
+                return to_return
+            else:
+                return {'Error code': str(errcode)}
+        return to_return
 
     def get_energy_summary(self, user):
         req_url = self.build_request_url('queryPlantCurrentData', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4])
         r = requests.get(req_url).json()
         if r['err'] == 0:
+            # print(r['dat'])
             return r['dat']
         else:
             errcode = r['err']
@@ -126,21 +135,22 @@ class ShineMonitor:
         r = requests.get(req_url)
         return r.json()
 
-    def get_source_time(self, user, field, threshold=0):
-        response = self.get_graph_data(user, field)
-        if response['err'] == 0:
-            logs = response['dat']
-            count = sum(map(lambda log: float(log['val']) > threshold, logs))
-            to_return = count * 5 / 60
-            to_return = str(int(to_return)) + ':' + str(int(to_return % 1 * 60))
-            return {'dat': to_return}
+    def get_source_time(self, user, fields):
+        response = self.get_data(user)
+        if 'err' not in response:
+            to_return = []
+            for i, field in enumerate(fields):
+                logs = response[field]
+                count = sum(map(lambda log: float(log) > 200, logs))
+                to_return.append(count * 5 / 60)
+                to_return[i] = str(int(to_return[i])) + ':' + str(int(to_return[i] % 1 * 60))
+            return to_return[0], to_return[1]
         else:
             errcode = response['err']
             return {'Error code': str(errcode)}
 
     def get_source_summary(self, user):
-        grid_time = self.get_source_time(user, 'bt_grid_voltage')
-        pv_time = self.get_source_time(user, 'bt_voltage_1', threshold=200)
+        grid_time, pv_time = self.get_source_time(user, ['Grid Voltage', 'PV1 Input Voltage'])
         if 'Error code' in grid_time or 'Error code' in pv_time:
             return grid_time
         else:

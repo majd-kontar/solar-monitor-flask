@@ -4,11 +4,11 @@
         <table>
             <tr>
                 <th>Grid Today</th>
-                <td>{{ source_time['grid']['dat'] +' hours' }}</td>
+                <td>{{ source_time['grid'] +' hours' }}</td>
             </tr>
             <tr>
                 <th>PV Today</th>
-                <td>{{ source_time['pv']['dat'] +' hours' }}</td>
+                <td>{{ source_time['pv'] +' hours' }}</td>
             </tr>
             <tr>
                 <th>Energy Today</th>
@@ -26,6 +26,14 @@
                 <th>Energy Total</th>
                 <td>{{ summary[3]['val']|float|round(2)|string  +' kWh' }}</td>
             </tr>
+            </tr>
+            <tr>
+                <th>CO2 Reduced</th>
+                <td>{{ summary[6]['val']|float|round(2)|string  +' kg' }}</td>
+            </tr>
+            <tr>
+            <th>Monetary Gains</th>
+            <td>{{ summary[4]['val'][1:]|string+' $' }}</td>
         </table>
     </div>
 </div>

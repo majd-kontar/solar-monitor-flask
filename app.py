@@ -34,11 +34,11 @@ def home():
         # print(session)
         user = session[id]
         data = shine_monitor.get_energy_now(user)
-        summary = shine_monitor.get_energy_summary(user)
+        # summary = shine_monitor.get_energy_summary(user)
         # source_time = shine_monitor.get_source_summary(user)
         status = shine_monitor.get_status(data)
         # print(data)
-        return render_template('home_page.html', data=data, status=status, summary=summary)
+        return render_template('home_page.html', data=data, status=status)
     else:
         response = make_response(redirect(url_for('login')))
         response.set_cookie('session_id', '', expires=0)

@@ -38,16 +38,17 @@ class ShineMonitor:
             database.update_token(user[0], token, secret, expire)
 
     def build_request_url(self, action, salt=None, secret=None, token=None, device_code=None, plant_id=None, pn=None, sn=None, usr=None, pwd=None,
-                          field=None, page=0):
+                          field=None, page=0, day=None):
         date = datetime.now(tz=pytz.timezone(self.timezone)).replace(tzinfo=None)
+        if day is None:
+            day = date.strftime('%Y-%m-%d')
         if action == 'queryPlantCurrentData':
             action = '&action=queryPlantCurrentData&plantid=' + plant_id + '&par=ENERGY_TODAY,ENERGY_MONTH,ENERGY_YEAR,ENERGY_TOTAL,ENERGY_PROCEEDS,ENERGY_CO2,CURRENT_TEMP,CURRENT_RADIANT,BATTERY_SOC,ENERGY_COAL,ENERGY_SO2'
         elif action == 'queryPlantActiveOutputPowerOneDay':
-            action = '&action=queryPlantActiveOuputPowerOneDay&plantid=' + plant_id + '&date=' + date.strftime(
-                '%Y-%m-%d') + '&i18n=en_US&lang=en_US'
+            action = '&action=queryPlantActiveOuputPowerOneDay&plantid=' + plant_id + '&date=' + day + '&i18n=en_US&lang=en_US'
         elif action == 'queryDeviceDataOneDayPaging':
-            action = '&action=queryDeviceDataOneDayPaging&devaddr=1&pn=' + pn + '&devcode=' + device_code + '&sn=' + sn + '&date=' + date.strftime(
-                '%Y-%m-%d') + '&page=' + str(page) + '&pagesize=500&i18n=en_US&lang=en_US'
+            action = '&action=queryDeviceDataOneDayPaging&devaddr=1&pn=' + pn + '&devcode=' + device_code + '&sn=' + sn + '&date=' + day + '&page=' + str(
+                page) + '&pagesize=500&i18n=en_US&lang=en_US'
         elif action == 'queryPlantDeviceDesignatedInformation':
             action = '&action=queryPlantDeviceDesignatedInformation&plantid=' + plant_id + '&devtype=512&i18n=en_US&parameter=energy_today,energy_total&i18n=en_US&lang=en_US '
         elif action == 'queryDeviceChartFieldDetailData':
@@ -95,14 +96,14 @@ class ShineMonitor:
         else:
             return {'Error code': str(errcode)}
 
-    def get_data(self, user):
+    def get_data(self, user,day):
         to_return = dict()
         self.check_token(user)
         stime = time.time()
         for page in range(6):
             print(page)
             req_url = self.build_request_url('queryDeviceDataOneDayPaging', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4],
-                                             page=page)
+                                             page=page, day=day)
             r = requests.get(req_url)
             errcode = r.json()['err']
             if errcode == 0:
@@ -135,8 +136,8 @@ class ShineMonitor:
         r = requests.get(req_url)
         return r.json()
 
-    def get_source_time(self, user, fields):
-        response = self.get_data(user)
+    def get_source_time(self, user, fields,day):
+        response = self.get_data(user,day)
         if 'err' not in response:
             to_return = []
             for i, field in enumerate(fields):
@@ -149,8 +150,8 @@ class ShineMonitor:
             errcode = response['err']
             return {'Error code': str(errcode)}
 
-    def get_source_summary(self, user):
-        grid_time, pv_time = self.get_source_time(user, ['Grid Voltage', 'PV1 Input Voltage'])
+    def get_source_summary(self, user,day):
+        grid_time, pv_time = self.get_source_time(user, ['Grid Voltage', 'PV1 Input Voltage'],day)
         if 'Error code' in grid_time or 'Error code' in pv_time:
             return grid_time
         else:

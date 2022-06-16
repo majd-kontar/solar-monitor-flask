@@ -103,6 +103,14 @@
         </div>
     </div>
 {% endif %}
-</body>
+<div class="pages">
+    {% if next %}
+        <button type="button" onclick=window.location.href=navigate('logs')+'?day={{ next }}'>{{ next }}</button>
+    {% endif %}
+    {% if today %}
+        <button type="button" onclick=window.location.href=navigate('logs')+'?day={{ today }}'>Today</button>
+    {% endif %}
+    <button type="button" onclick=window.location.href=navigate('logs')+'?day={{ prev }}'>{{ prev }}</button>
+</div></body>
 {% include 'footer.html' %}
 </html>

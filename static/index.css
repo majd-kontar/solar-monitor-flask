@@ -144,6 +144,10 @@ button.menu {
     display: none;
 }
 
+.pages{
+    display: flex;
+}
+
 footer p {
     text-align: center;
     margin: 50px 20px 20px 20px;

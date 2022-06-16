@@ -10,30 +10,32 @@
                 <th>PV Today</th>
                 <td>{{ source_time['pv'] +' hours' }}</td>
             </tr>
-            <tr>
-                <th>Energy Today</th>
-                <td>{{ summary[0]['val']|float|round(2)|string +' kWh' }}</td>
-            </tr>
-            <tr>
-                <th>Energy Month</th>
-                <td>{{ summary[1]['val']|float|round(2)|string  +' kWh' }}</td>
-            </tr>
-            <tr>
-                <th>Energy Year</th>
-                <td>{{ summary[2]['val']|float|round(2)|string +' kWh' }}</td>
-            </tr>
-            <tr>
-                <th>Energy Total</th>
-                <td>{{ summary[3]['val']|float|round(2)|string  +' kWh' }}</td>
-            </tr>
-            </tr>
-            <tr>
-                <th>CO2 Reduced</th>
-                <td>{{ summary[6]['val']|float|round(2)|string  +' kg' }}</td>
-            </tr>
-            <tr>
-            <th>Monetary Gains</th>
-            <td>{{ summary[4]['val'][1:]|string+' $' }}</td>
+            {% if today==None %}
+                <tr>
+                    <th>Energy Today</th>
+                    <td>{{ summary[0]['val']|float|round(2)|string +' kWh' }}</td>
+                </tr>
+                <tr>
+                    <th>Energy Month</th>
+                    <td>{{ summary[1]['val']|float|round(2)|string  +' kWh' }}</td>
+                </tr>
+                <tr>
+                    <th>Energy Year</th>
+                    <td>{{ summary[2]['val']|float|round(2)|string +' kWh' }}</td>
+                </tr>
+                <tr>
+                    <th>Energy Total</th>
+                    <td>{{ summary[3]['val']|float|round(2)|string  +' kWh' }}</td>
+                </tr>
+                </tr>
+                <tr>
+                    <th>CO2 Reduced</th>
+                    <td>{{ summary[6]['val']|float|round(2)|string  +' kg' }}</td>
+                </tr>
+                <tr>
+                <th>Monetary Gains</th>
+                <td>{{ summary[4]['val'][1:]|string+' $' }}</td>
+            {% endif %}
         </table>
     </div>
 </div>

@@ -48,11 +48,24 @@ def home():
 @app.route('/logs', methods=['GET'])
 def get_logs():
     id = request.cookies.get('session_id')
+    today = datetime.now(tz=pytz.timezone(shine_monitor.timezone)).replace(tzinfo=None)
+    today = today.strftime('%Y-%m-%d')
+    day = request.args.get('day', default=today)
+    day = datetime.strptime(day, '%Y-%m-%d')
+    print(f'Day: {day.strftime("%Y-%m-%d")}\tToday: {today}')
+    prev = day - timedelta(days=1)
+    prev = prev.strftime('%Y-%m-%d')
+    if day.strftime('%Y-%m-%d') != today:
+        next = day + timedelta(days=1)
+        next = next.strftime('%Y-%m-%d')
+    else:
+        today = None
+        next = None
     if id in session:
         # print(session)
         user = session[id]
-        data = shine_monitor.get_data(user)
-        return render_template('logs_page.html', data=data)
+        data = shine_monitor.get_data(user, day.strftime('%Y-%m-%d'))
+        return render_template('logs_page.html', data=data, today=today, prev=prev, next=next)
     else:
         return redirect(url_for('login'))
 
@@ -60,12 +73,25 @@ def get_logs():
 @app.route('/summary', methods=['GET'])
 def get_summary():
     id = request.cookies.get('session_id')
+    today = datetime.now(tz=pytz.timezone(shine_monitor.timezone)).replace(tzinfo=None)
+    today = today.strftime('%Y-%m-%d')
+    day = request.args.get('day', default=today)
+    day = datetime.strptime(day, '%Y-%m-%d')
+    print(f'Day: {day.strftime("%Y-%m-%d")}\tToday: {today}')
+    prev = day - timedelta(days=1)
+    prev = prev.strftime('%Y-%m-%d')
+    if day.strftime('%Y-%m-%d') != today:
+        next = day + timedelta(days=1)
+        next = next.strftime('%Y-%m-%d')
+    else:
+        today = None
+        next = None
     if id in session:
         # print(session)
         user = session[id]
         summary = shine_monitor.get_energy_summary(user)
-        source_time = shine_monitor.get_source_summary(user)
-        return render_template('summary_page.html', summary=summary, source_time=source_time)
+        source_time = shine_monitor.get_source_summary(user, day.strftime('%Y-%m-%d'))
+        return render_template('summary_page.html', summary=summary, source_time=source_time, today=today, next=next, prev=prev)
     else:
         return redirect(url_for('login'))
 

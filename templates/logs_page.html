@@ -105,12 +105,13 @@
 {% endif %}
 <div class="pages">
     {% if next %}
-        <button type="button" onclick=window.location.href=navigate('logs')+'?day={{ next }}'>{{ next }}</button>
+        <button type="button" class="next" onclick=window.location.href=navigate('logs')+'?day={{ next }}'>{{ next }}</button>
     {% endif %}
     {% if today %}
         <button type="button" onclick=window.location.href=navigate('logs')+'?day={{ today }}'>Today</button>
     {% endif %}
-    <button type="button" onclick=window.location.href=navigate('logs')+'?day={{ prev }}'>{{ prev }}</button>
-</div></body>
+    <button type="button" class="prev" onclick=window.location.href=navigate('logs')+'?day={{ prev }}'>{{ prev }}</button>
+</div>
+</body>
 {% include 'footer.html' %}
 </html>

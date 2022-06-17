@@ -7,7 +7,6 @@
     {% include 'summary.html' %}
 {% endif %}
 </body>
-{% include 'footer.html' %}
 <div class="pages">
     {% if today %}
         <button type="button" class="next" onclick=window.location.href=navigate('summary')+'?day={{ next }}'>{{ next }}</button>
@@ -17,4 +16,6 @@
         <button type="button" disabled>Today</button>
     {% endif %}
     <button type="button" class="prev" onclick=window.location.href=navigate('summary')+'?day={{ prev }}'>{{ prev }}</button>
-</div></html>
+</div>
+{% include 'footer.html' %}
+</html>

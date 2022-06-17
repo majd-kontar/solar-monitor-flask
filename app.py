@@ -55,12 +55,10 @@ def get_logs():
     print(f'Day: {day.strftime("%Y-%m-%d")}\tToday: {today}')
     prev = day - timedelta(days=1)
     prev = prev.strftime('%Y-%m-%d')
-    if day.strftime('%Y-%m-%d') != today:
-        next = day + timedelta(days=1)
-        next = next.strftime('%Y-%m-%d')
-    else:
+    next = day + timedelta(days=1)
+    next = next.strftime('%Y-%m-%d')
+    if day.strftime('%Y-%m-%d') == today:
         today = None
-        next = None
     if id in session:
         # print(session)
         user = session[id]
@@ -80,12 +78,10 @@ def get_summary():
     print(f'Day: {day.strftime("%Y-%m-%d")}\tToday: {today}')
     prev = day - timedelta(days=1)
     prev = prev.strftime('%Y-%m-%d')
-    if day.strftime('%Y-%m-%d') != today:
-        next = day + timedelta(days=1)
-        next = next.strftime('%Y-%m-%d')
-    else:
+    next = day + timedelta(days=1)
+    next = next.strftime('%Y-%m-%d')
+    if day.strftime('%Y-%m-%d') == today:
         today = None
-        next = None
     if id in session:
         # print(session)
         user = session[id]

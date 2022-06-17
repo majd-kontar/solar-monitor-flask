@@ -105,6 +105,17 @@ button.menu:hover {
     background-color: orange;
 }
 
+button:disabled {
+    background-color: darkgrey;
+    color: black;
+}
+
+.pages .next:disabled {
+    background: linear-gradient(120deg, transparent 1em, darkgrey 1.05em, darkgrey 1.5em, transparent 1.45em, transparent 2em, darkgrey 2.05em) top no-repeat,
+    linear-gradient(60deg, transparent 1em, darkgrey 1.05em, darkgrey 1.5em, transparent 1.45em, transparent 2em, darkgrey 2.05em) bottom no-repeat;
+    background-size: 100% 50%;
+}
+
 img {
     width: 180px;
     padding: 20px;

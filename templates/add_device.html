@@ -1,7 +1,7 @@
 {% include "navbar_main.html" %}
 <body>
 <div class="content">
-    <h2>Add Device</h2>
+    <h2>Add a Device</h2>
     <br>
     <form action="" method="post">
         <input type="text" required placeholder="Device Name" name="devicename" value="{{ request.form.devicename }}">
@@ -12,11 +12,8 @@
             <p class="error"><strong>Error:</strong> {{ error }}
             <br>
         {% endif %}
-        <button class="submit" type="submit">Register</button>
+        <button class="submit" type="submit">Add</button>
     </form>
-    <a class="switch" id="login" onclick=window.location.href='/login'>
-        <label for="login">Already have an account?</label>
-    </a>
 </div>
 </body>
 {% include "footer.html" %}

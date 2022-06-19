@@ -21,7 +21,7 @@ h1 {
 }
 
 nav {
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: space-evenly;
     background-color: deepskyblue;
@@ -179,6 +179,24 @@ footer p {
     margin: 50px 20px 20px 20px;
 }
 
+.devices {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+}
+
+.devices div {
+    background-color: darkseagreen;
+    width: fit-content;
+    border-radius: 20px;
+    border-style: groove;
+}
+
+.devices div {
+    display: none;
+}
+
 @media only screen and (max-width: 1500px) {
     input {
         display: block;
@@ -206,10 +224,6 @@ footer p {
     a h1 {
         font-size: 40px;
         white-space: break-spaces;
-    }
-
-    nav {
-        display: block;
     }
 
     nav button {
@@ -269,7 +283,6 @@ footer p {
     }
 
     nav {
-        display: block;
         padding-bottom: 5px;
     }
 

@@ -9,6 +9,22 @@
     <title>Solar Monitor</title>
 </head>
 <nav>
+    <div class="devices">
+        <button type="button" type="button" onclick=show_hide_devices()>
+            {{ device }}
+        </button>
+        {% if (devices|length)>1 %}
+            <div>
+                {% for i in range(devices|length) %}
+                    {% if devices[i]!=device %}
+                        <button type="button" class="device" onclick=window.location.href=navigate('change_device/{{ devices[i] }}')>
+                        {{ devices[i] }}
+                    {% endif %}
+                </button>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
     <a href='/'>
         <h1>Solar Monitor</h1>
     </a>
@@ -33,6 +49,10 @@
         <button type="button"
                 onclick=window.location.href=navigate('summary')>
             Summary
+        </button>
+        <button type="button"
+                onclick=window.location.href=navigate('add_device')>
+            Add Device
         </button>
         <button type="button"
                 onclick=window.location.href=navigate('logout')>

@@ -14,3 +14,12 @@ const show_hide_btns = () => {
         buttons.style.setProperty('display', 'flex')
     }
 }
+
+const show_hide_devices = () => {
+    var buttons = document.querySelector('.devices div')
+    if (buttons.style.getPropertyValue('display') === 'flex') {
+        buttons.style.setProperty('display', 'none')
+    } else {
+        buttons.style.setProperty('display', 'flex')
+    }
+}

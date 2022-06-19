@@ -1,12 +1,9 @@
 {% include "navbar_main.html" %}
 <body>
 <div class="content">
-    <h2>Please Register</h2>
+    <h2>Add Device</h2>
     <br>
     <form action="" method="post">
-        <input type="text" required placeholder="Username" name="username" value="{{ request.form.username }}">
-        <input type="password" required placeholder="Password" name="password" value="{{ request.form.password }}">
-        <input type="text" required placeholder="Plant ID" name="plantid" value="{{ request.form.plantid }}">
         <input type="text" required placeholder="Device Name" name="devicename" value="{{ request.form.devicename }}">
         <input type="text" required placeholder="pn" name="pn" value="{{ request.form.pn }}">
         <input type="text" required placeholder="sn" name="sn" value="{{ request.form.sn }}">

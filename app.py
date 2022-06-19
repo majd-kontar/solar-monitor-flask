@@ -34,11 +34,14 @@ def home():
         # print(session)
         user = session[id]
         data = shine_monitor.get_energy_now(user)
+        devices = user['device_names']
+        device = user['device']
+        print(device)
         # summary = shine_monitor.get_energy_summary(user)
         # source_time = shine_monitor.get_source_summary(user)
         status = shine_monitor.get_status(data)
         # print(data)
-        return render_template('home_page.html', data=data, status=status)
+        return render_template('home_page.html', data=data, status=status, device=device, devices=devices)
     else:
         response = make_response(redirect(url_for('login')))
         response.set_cookie('session_id', '', expires=0)
@@ -63,7 +66,9 @@ def get_logs():
         # print(session)
         user = session[id]
         data = shine_monitor.get_data(user, day.strftime('%Y-%m-%d'))
-        return render_template('logs_page.html', data=data, today=today, prev=prev, next=next)
+        devices = user['device_names']
+        device = user['device']
+        return render_template('logs_page.html', data=data, today=today, prev=prev, next=next, device=device, devices=devices)
     else:
         return redirect(url_for('login'))
 
@@ -87,7 +92,10 @@ def get_summary():
         user = session[id]
         summary = shine_monitor.get_energy_summary(user)
         source_time = shine_monitor.get_source_summary(user, day.strftime('%Y-%m-%d'))
-        return render_template('summary_page.html', summary=summary, source_time=source_time, today=today, next=next, prev=prev)
+        device = user['device']
+        devices = user['device_names']
+        return render_template('summary_page.html', summary=summary, source_time=source_time, today=today, next=next, prev=prev, device=device,
+                               devices=devices)
     else:
         return redirect(url_for('login'))
 
@@ -100,8 +108,10 @@ def get_status():
         user = session[id]
         data = shine_monitor.get_energy_now(user)
         status = shine_monitor.get_status(data)
+        device = user['device']
+        devices = user['device_names']
         # print(data)
-        return render_template('status_page.html', status=status)
+        return render_template('status_page.html', status=status, device=device, devices=devices)
     else:
         return redirect(url_for('login'))
 
@@ -115,7 +125,8 @@ def login():
         pwd = request.form['password'].strip()
         pwd = str(hashlib.sha1(pwd.encode('utf-8')).hexdigest())
         user_db = database.get_user(usr)
-        if user_db and pwd == user_db[1]:
+        if user_db and pwd == user_db['password']:
+            user_db['device'] = user_db['device_names'][0]
             key = get_random_string(20)
             session[key] = user_db
             response = make_response(redirect('/home-' + key))
@@ -162,6 +173,43 @@ def register():
         else:
             err = 'Invalid Credentials. Please try again.'
     return render_template('register.html', error=err)
+
+
+@app.route('/add_device', methods=['GET', 'POST'])
+def add_device():
+    err = None
+    id = request.cookies.get('session_id')
+    if id in session:
+        if request.method == 'POST':
+            try:
+                user = session[id]
+                if database.get_device(user, request.form['devicename'].strip()):
+                    err = 'Device already exists!'
+                elif shine_monitor.invalid_device(user, request.form):
+                    err = 'Check device parameters!'
+                else:
+                    database.add_device(user, request.form)
+                    user_db = database.get_user(user['username'])
+                    user_db['device'] = user_db['device_names'][0]
+                    session[id] = user_db
+                    return redirect('/home')
+            except:
+                err = 'Failed to add device. Please try again.'
+        return render_template('add_device.html', error=err)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/change_device/<device>')
+def set_device(device):
+    id = request.cookies.get('session_id')
+    if id in session:
+        user = session[id]
+        user['device'] = device
+        session[id] = user
+        return redirect(request.referrer)
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/', defaults={'path': ''})

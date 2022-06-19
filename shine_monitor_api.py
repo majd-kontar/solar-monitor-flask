@@ -20,7 +20,7 @@ class ShineMonitor:
 
     def check_token(self, user):
         d = datetime.now(tz=pytz.timezone(self.timezone)).replace(tzinfo=None)
-        e = datetime.strptime(user[8], '%Y-%m-%d %H:%M:%S.%f')
+        e = datetime.strptime(user['expire'], '%Y-%m-%d %H:%M:%S.%f')
         try:
             if self._debug == 1:
                 print("Datetime now:  " + str(d))
@@ -34,8 +34,8 @@ class ShineMonitor:
         except:
             if self._debug == 1:
                 print("Logging in using credentials")
-            _, token, secret, expire = self.login(user[0], user[1])
-            database.update_token(user[0], token, secret, expire)
+            _, token, secret, expire = self.login(user['username'], user['password'])
+            database.update_token(user['username'], token, secret, expire)
 
     def build_request_url(self, action, salt=None, secret=None, token=None, device_code=None, plant_id=None, pn=None, sn=None, usr=None, pwd=None,
                           field=None, page=0, day=None):
@@ -85,7 +85,9 @@ class ShineMonitor:
 
     def get_energy_now(self, user):
         self.check_token(user)
-        req_url = self.build_request_url('queryDeviceDataOneDayPaging', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4])
+        device = user['devices'][user['device']]
+        req_url = self.build_request_url('queryDeviceDataOneDayPaging', self.salt(), user['secret'], user['token'], device[4], user['plantid'],
+                                         device[3], device[2])
         r = requests.get(req_url)
         errcode = r.json()['err']
         if errcode == 0:
@@ -96,14 +98,28 @@ class ShineMonitor:
         else:
             return {'Error code': str(errcode)}
 
-    def get_data(self, user,day):
+    def invalid_device(self, user, device):
+        self.check_token(user)
+        req_url = self.build_request_url('queryDeviceDataOneDayPaging', self.salt(), user['secret'], user['token'], device['devcode'].strip,
+                                         user['plantid'],
+                                         device['pn'].strip(), device['sn'].strip())
+        r = requests.get(req_url)
+        errcode = r.json()['err']
+        if errcode == 0:
+            return False
+        else:
+            return True
+
+    def get_data(self, user, day):
         to_return = dict()
         self.check_token(user)
         stime = time.time()
         for page in range(6):
             print(page)
-            req_url = self.build_request_url('queryDeviceDataOneDayPaging', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4],
-                                             page=page, day=day)
+            self.check_token(user)
+            device = user['devices'][user['device']]
+            req_url = self.build_request_url('queryDeviceDataOneDayPaging', self.salt(), user['secret'], user['token'], device[4], user['plantid'],
+                                             device[3], device[2], page=page, day=day)
             r = requests.get(req_url)
             errcode = r.json()['err']
             if errcode == 0:
@@ -121,7 +137,8 @@ class ShineMonitor:
         return to_return
 
     def get_energy_summary(self, user):
-        req_url = self.build_request_url('queryPlantCurrentData', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4])
+        self.check_token(user)
+        req_url = self.build_request_url('queryPlantCurrentData', self.salt(), user['secret'], user['token'], plant_id=user['plantid'])
         r = requests.get(req_url).json()
         if r['err'] == 0:
             # print(r['dat'])
@@ -130,14 +147,14 @@ class ShineMonitor:
             errcode = r['err']
             return {'Error code': str(errcode)}
 
-    def get_graph_data(self, user, field):
-        req_url = self.build_request_url('queryDeviceChartFieldDetailData', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4],
-                                         field=field)
-        r = requests.get(req_url)
-        return r.json()
+    # def get_graph_data(self, user, field):
+    #     req_url = self.build_request_url('queryDeviceChartFieldDetailData', self.salt(), user[7], user[6], user[5], user[2], user[3], user[4],
+    #                                      field=field)
+    #     r = requests.get(req_url)
+    #     return r.json()
 
-    def get_source_time(self, user, fields,day):
-        response = self.get_data(user,day)
+    def get_source_time(self, user, fields, day):
+        response = self.get_data(user, day)
         if 'err' not in response:
             to_return = []
             for i, field in enumerate(fields):
@@ -150,8 +167,8 @@ class ShineMonitor:
             errcode = response['err']
             return {'Error code': str(errcode)}
 
-    def get_source_summary(self, user,day):
-        grid_time, pv_time = self.get_source_time(user, ['Grid Voltage', 'PV1 Input Voltage'],day)
+    def get_source_summary(self, user, day):
+        grid_time, pv_time = self.get_source_time(user, ['Grid Voltage', 'PV1 Input Voltage'], day)
         if 'Error code' in grid_time or 'Error code' in pv_time:
             return grid_time
         else:
